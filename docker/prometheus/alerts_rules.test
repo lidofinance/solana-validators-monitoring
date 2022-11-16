@@ -1,0 +1,213 @@
+---
+evaluation_interval: 1m
+rule_files:
+  - alerts_rules.yml
+tests:
+  - interval: 10s
+    input_series:
+      - series: solana_validators_monitoring_last_fetch_timestamp
+        values: 1000+0x360 1000+0x720
+      - series: solana_validators_monitoring_current_epoch
+        values: 0+0x360 1+0x720
+    alert_rule_test:
+      - alertname: DataActuality
+        eval_time: 95m
+        exp_alerts:
+          - exp_labels:
+              severity: critical
+            exp_annotations:
+              emoji: ⏳
+              summary: "Data actuality greater then 1 hour"
+              description: "It's not OK. Please, check app health"
+              resolved_summary: "Data actuality is back to normal and now less then 1 hour"
+              resolved_description: "It's OK"
+              url: "http://localhost:8082/d/nuY7ct_nz/solana-validators"
+              footer_text: 'Epoch • 1'
+              footer_image: "https://cryptologos.cc/logos/solana-sol-logo.png"
+
+  - interval: 10s
+    input_series:
+      - series: solana_validators_monitoring_skip_rate{operator="Operator 1"}
+        values: 0+0x6 11+0x6 20+0x6 0+0x6
+      - series: solana_validators_monitoring_cluster_avg_skip_rate
+        values: 5+0x6 0+0x6 5+0x6 5+0x6
+      - series: solana_validators_monitoring_current_epoch
+        values: 0+0x6 1+0x6 2+0x6 3+0x6
+    alert_rule_test:
+      - alertname: ValidatorSkipRateHigherClusterAvg
+        eval_time: 1m
+      - alertname: ValidatorSkipRateHigherClusterAvg
+        eval_time: 2m
+        exp_alerts:
+          - exp_labels:
+              severity: critical
+              operator: Operator 1
+            exp_annotations:
+              emoji: ⏭️
+              summary: "Operators have skip rate higher than Solana cluster average"
+              description: "Skip rate per operator"
+              resolved_summary: "Operators have skip rate lower than Solana cluster average"
+              resolved_description: "Skip rate per operator"
+              field_name: "Operator 1"
+              field_value: '[11 %](http://localhost:8082/d/nuY7ct_nz/solana-validators?from=-780000.000000&to=120000.000000)'
+              url: "http://localhost:8082/d/nuY7ct_nz/solana-validators"
+              footer_text: 'Epoch • 1'
+              footer_image: "https://cryptologos.cc/logos/solana-sol-logo.png"
+      - alertname: ValidatorSkipRateHigherClusterAvg
+        eval_time: 3m
+        exp_alerts:
+          - exp_labels:
+              severity: critical
+              operator: Operator 1
+            exp_annotations:
+              emoji: ⏭️
+              summary: "Operators have skip rate higher than Solana cluster average"
+              description: "Skip rate per operator"
+              resolved_summary: "Operators have skip rate lower than Solana cluster average"
+              resolved_description: "Skip rate per operator"
+              field_name: "Operator 1"
+              field_value: '[20 %](http://localhost:8082/d/nuY7ct_nz/solana-validators?from=-720000.000000&to=180000.000000)'
+              url: "http://localhost:8082/d/nuY7ct_nz/solana-validators"
+              footer_text: 'Epoch • 2'
+              footer_image: "https://cryptologos.cc/logos/solana-sol-logo.png"
+      - alertname: ValidatorSkipRateHigherClusterAvg
+        eval_time: 4m
+
+  - interval: 10s
+    input_series:
+      - series: solana_validators_monitoring_vote_distance{operator="Operator 1"}
+        values: 0+0x6 100+0x6 200+0x6 0+0x6
+      - series: solana_validators_monitoring_cluster_avg_vote_distance
+        values: 5+0x6 0+0x6 5+0x6 5+0x6
+      - series: solana_validators_monitoring_current_epoch
+        values: 0+0x6 1+0x6 2+0x6 3+0x6
+    alert_rule_test:
+      - alertname: ValidatorVoteDistanceHigherClusterAvg
+        eval_time: 1m
+      - alertname: ValidatorVoteDistanceHigherClusterAvg
+        eval_time: 2m
+        exp_alerts:
+          - exp_labels:
+              severity: critical
+              operator: Operator 1
+            exp_annotations:
+              emoji: ↔️
+              summary: "Operators have vote distance greater than Solana cluster average"
+              description: "Vote distance per operator"
+              resolved_summary: "Operators have vote distance less than Solana cluster average"
+              resolved_description: "Vote distance per operator"
+              field_name: "Operator 1"
+              field_value: '[100](http://localhost:8082/d/nuY7ct_nz/solana-validators?from=-780000.000000&to=120000.000000)'
+              url: "http://localhost:8082/d/nuY7ct_nz/solana-validators"
+              footer_text: 'Epoch • 1'
+              footer_image: "https://cryptologos.cc/logos/solana-sol-logo.png"
+      - alertname: ValidatorVoteDistanceHigherClusterAvg
+        eval_time: 3m
+        exp_alerts:
+          - exp_labels:
+              severity: critical
+              operator: Operator 1
+            exp_annotations:
+              emoji: ↔️
+              summary: "Operators have vote distance greater than Solana cluster average"
+              description: "Vote distance per operator"
+              resolved_summary: "Operators have vote distance less than Solana cluster average"
+              resolved_description: "Vote distance per operator"
+              field_name: "Operator 1"
+              field_value: '[200](http://localhost:8082/d/nuY7ct_nz/solana-validators?from=-720000.000000&to=180000.000000)'
+              url: "http://localhost:8082/d/nuY7ct_nz/solana-validators"
+              footer_text: 'Epoch • 2'
+              footer_image: "https://cryptologos.cc/logos/solana-sol-logo.png"
+      - alertname: ValidatorVoteDistanceHigherClusterAvg
+        eval_time: 4m
+
+  - interval: 10s
+    input_series:
+      - series: solana_validators_monitoring_down_time{operator="Operator 1"}
+        values: 0+0x6 360+0x6 420+0x6 0+0x6
+      - series: solana_validators_monitoring_current_epoch
+        values: 0+0x6 1+0x6 2+0x6 3+0x6 4+0x6
+    alert_rule_test:
+      - alertname: ValidatorDownTime
+        eval_time: 1m
+      - alertname: ValidatorDownTime
+        eval_time: 2m
+        exp_alerts:
+          - exp_labels:
+              severity: critical
+              operator: Operator 1
+            exp_annotations:
+              emoji: ⏱️
+              summary: "Operators are down more than 5 minutes!"
+              description: "Downtime per operator"
+              resolved_summary: "Operators are up!"
+              resolved_description: "Downtime per operator"
+              field_name: "Operator 1"
+              field_value: '[6m 0s](http://localhost:8082/d/nuY7ct_nz/solana-validators?from=-780000.000000&to=120000.000000)'
+              url: "http://localhost:8082/d/nuY7ct_nz/solana-validators"
+              footer_text: 'Epoch • 1'
+              footer_image: "https://cryptologos.cc/logos/solana-sol-logo.png"
+      - alertname: ValidatorDownTime
+        eval_time: 3m
+        exp_alerts:
+          - exp_labels:
+              severity: critical
+              operator: Operator 1
+            exp_annotations:
+              emoji: ⏱️
+              summary: "Operators are down more than 5 minutes!"
+              description: "Downtime per operator"
+              resolved_summary: "Operators are up!"
+              resolved_description: "Downtime per operator"
+              field_name: "Operator 1"
+              field_value: '[7m 0s](http://localhost:8082/d/nuY7ct_nz/solana-validators?from=-720000.000000&to=180000.000000)'
+              url: "http://localhost:8082/d/nuY7ct_nz/solana-validators"
+              footer_text: 'Epoch • 2'
+              footer_image: "https://cryptologos.cc/logos/solana-sol-logo.png"
+      - alertname: ValidatorDownTime
+        eval_time: 4m
+
+  - interval: 10s
+    input_series:
+      - series: solana_validators_monitoring_out_of_epoch{operator="Operator 1"}
+        values: 0+0x6 1+0x240 0+0x6
+      - series: solana_validators_monitoring_out_of_epoch{operator="Operator 2"}
+        values: 0+0x6 1+0x240 0+0x6
+      - series: solana_validators_monitoring_current_epoch
+        values: 0+0x6 1+0x240 2+0x240
+    alert_rule_test:
+      - alertname: ValidatorOutOfEpoch
+        eval_time: 1m
+      - alertname: ValidatorOutOfEpoch
+        eval_time: 35m
+        exp_alerts:
+          - exp_labels:
+              severity: critical
+              operator: Operator 1
+            exp_annotations:
+              emoji: 🚨
+              summary: "Operators are out of epoch!"
+              description: "List of operators has never voted in epoch"
+              resolved_summary: "Operators are in epoch!"
+              resolved_description: "List of operators has voted in epoch"
+              field_name: "Operator 1"
+              field_value: '[1](http://localhost:8082/d/nuY7ct_nz/solana-validators?from=1200000.000000&to=2100000.000000)'
+              url: "http://localhost:8082/d/nuY7ct_nz/solana-validators"
+              footer_text: 'Epoch • 1'
+              footer_image: "https://cryptologos.cc/logos/solana-sol-logo.png"
+          - exp_labels:
+              severity: critical
+              operator: Operator 2
+            exp_annotations:
+              emoji: 🚨
+              summary: "Operators are out of epoch!"
+              description: "List of operators has never voted in epoch"
+              resolved_summary: "Operators are in epoch!"
+              resolved_description: "List of operators has voted in epoch"
+              field_name: "Operator 2"
+              field_value: '[1](http://localhost:8082/d/nuY7ct_nz/solana-validators?from=1200000.000000&to=2100000.000000)'
+              url: "http://localhost:8082/d/nuY7ct_nz/solana-validators"
+              footer_text: 'Epoch • 1'
+              footer_image: "https://cryptologos.cc/logos/solana-sol-logo.png"
+      - alertname: ValidatorOutOfEpoch
+        eval_time: 1h

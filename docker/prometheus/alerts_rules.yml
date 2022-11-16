@@ -1,0 +1,83 @@
+groups:
+  - name: solana-validators-alerts
+    rules:
+      - alert: DataActuality
+        expr: time() - solana_validators_monitoring_last_fetch_timestamp / 1000 > 3600
+        for: 30m
+        labels:
+          severity: critical
+        annotations:
+          emoji: ⏳
+          summary: "Data actuality greater then 1 hour"
+          resolved_summary: "Data actuality is back to normal and now less then 1 hour"
+          description: "It's not OK. Please, check app health"
+          resolved_description: "It's OK"
+          url: "http://localhost:8082/d/nuY7ct_nz/solana-validators"
+          footer_text: 'Epoch • {{ with query "solana_validators_monitoring_current_epoch" }}{{ . | first | value | printf "%.0f" }}{{ end }}'
+          footer_image: "https://cryptologos.cc/logos/solana-sol-logo.png"
+
+      - alert: ValidatorSkipRateHigherClusterAvg
+        expr: solana_validators_monitoring_skip_rate > on (instance, job) group_left solana_validators_monitoring_cluster_avg_skip_rate + 10
+        labels:
+          severity: critical
+        annotations:
+          emoji: ⏭️
+          summary: "Operators have skip rate higher than Solana cluster average"
+          resolved_summary: "Operators have skip rate lower than Solana cluster average"
+          description: "Skip rate per operator"
+          resolved_description: "Skip rate per operator"
+          field_name: "{{ $labels.operator }}"
+          field_value: '[{{ $value }} %](http://localhost:8082/d/nuY7ct_nz/solana-validators?from={{ with query "(time() - 900) * 1000" }}{{ . | first | value | printf "%f" }}{{ end }}&to={{ with query "time() * 1000" }}{{ . | first | value | printf "%f" }}{{ end }})'
+          url: "http://localhost:8082/d/nuY7ct_nz/solana-validators"
+          footer_text: 'Epoch • {{ with query "solana_validators_monitoring_current_epoch" }}{{ . | first | value | printf "%.0f" }}{{ end }}'
+          footer_image: "https://cryptologos.cc/logos/solana-sol-logo.png"
+
+      - alert: ValidatorVoteDistanceHigherClusterAvg
+        expr: solana_validators_monitoring_vote_distance > on (instance, job) group_left solana_validators_monitoring_cluster_avg_vote_distance
+        labels:
+          severity: critical
+        annotations:
+          emoji: ↔️
+          summary: "Operators have vote distance greater than Solana cluster average"
+          resolved_summary: "Operators have vote distance less than Solana cluster average"
+          description: "Vote distance per operator"
+          resolved_description: "Vote distance per operator"
+          field_name: "{{ $labels.operator }}"
+          field_value: '[{{ $value }}](http://localhost:8082/d/nuY7ct_nz/solana-validators?from={{ with query "(time() - 900) * 1000" }}{{ . | first | value | printf "%f" }}{{ end }}&to={{ with query "time() * 1000" }}{{ . | first | value | printf "%f" }}{{ end }})'
+          url: "http://localhost:8082/d/nuY7ct_nz/solana-validators"
+          footer_text: 'Epoch • {{ with query "solana_validators_monitoring_current_epoch" }}{{ . | first | value | printf "%.0f" }}{{ end }}'
+          footer_image: "https://cryptologos.cc/logos/solana-sol-logo.png"
+
+      - alert: ValidatorDownTime
+        expr: solana_validators_monitoring_down_time > 300
+        labels:
+          severity: critical
+        annotations:
+          emoji: ⏱️
+          summary: "Operators are down more than 5 minutes!"
+          resolved_summary: "Operators are up!"
+          description: "Downtime per operator"
+          resolved_description: "Downtime per operator"
+          field_name: "{{ $labels.operator }}"
+          field_value: '[{{ humanizeDuration $value }}](http://localhost:8082/d/nuY7ct_nz/solana-validators?from={{ with query "(time() - 900) * 1000" }}{{ . | first | value | printf "%f" }}{{ end }}&to={{ with query "time() * 1000" }}{{ . | first | value | printf "%f" }}{{ end }})'
+          url: "http://localhost:8082/d/nuY7ct_nz/solana-validators"
+          footer_text: 'Epoch • {{ with query "solana_validators_monitoring_current_epoch" }}{{ . | first | value | printf "%.0f" }}{{ end }}'
+          footer_image: "https://cryptologos.cc/logos/solana-sol-logo.png"
+
+
+      - alert: ValidatorOutOfEpoch
+        expr: solana_validators_monitoring_out_of_epoch > 0
+        for: 30m
+        labels:
+          severity: critical
+        annotations:
+          emoji: 🚨
+          summary: "Operators are out of epoch!"
+          resolved_summary: "Operators are in epoch!"
+          description: "List of operators has never voted in epoch"
+          resolved_description: "List of operators has voted in epoch"
+          field_name: "{{ $labels.operator }}"
+          field_value: '[{{ $value }}](http://localhost:8082/d/nuY7ct_nz/solana-validators?from={{ with query "(time() - 900) * 1000" }}{{ . | first | value | printf "%f" }}{{ end }}&to={{ with query "time() * 1000" }}{{ . | first | value | printf "%f" }}{{ end }})'
+          url: "http://localhost:8082/d/nuY7ct_nz/solana-validators"
+          footer_text: 'Epoch • {{ with query "solana_validators_monitoring_current_epoch" }}{{ . | first | value | printf "%.0f" }}{{ end }}'
+          footer_image: "https://cryptologos.cc/logos/solana-sol-logo.png"

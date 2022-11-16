@@ -1,0 +1,114 @@
+version: '3.7'
+
+services:
+
+#
+# If you want, you can view performance for each container through Grafana explorer and Prometheus datasource
+#
+#  cadvisor:
+#    image: 'zcube/cadvisor:latest'
+#    container_name: cadvisor
+#    restart: unless-stopped
+#    volumes:
+#      - /:/rootfs:ro
+#      - /var/run:/var/run:rw
+#      - /sys:/sys:ro
+#      - /var/lib/docker/:/var/lib/docker:ro
+#    ports:
+#      - '8083:8080'
+
+  db:
+    image: postgres:14-alpine
+    container_name: db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    expose:
+      - 5432
+    volumes:
+      - ./.volumes/pgdata/:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  grafana:
+    image: grafana/grafana:8.4.2
+    container_name: grafana
+    hostname: grafana.local
+    restart: unless-stopped
+    volumes:
+      - ./.volumes/grafana/:/var/lib/grafana
+      - ./docker/grafana/provisioning:/etc/grafana/provisioning
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_SERVER_DOMAIN=locahost
+    ports:
+      - "8082:3000"
+
+  prometheus:
+    image: prom/prometheus:latest
+    sysctls:
+      - net.ipv6.conf.lo.disable_ipv6=0
+      - net.ipv6.conf.all.disable_ipv6=0
+    container_name: prometheus
+    restart: unless-stopped
+    volumes:
+      - ./.volumes/prometheus/:/prometheus
+      - ./docker/prometheus/:/etc/prometheus/
+    expose:
+      - 9090
+    ports:
+      - "0.0.0.0:9090:9090/tcp"
+
+  alertmanager:
+    image: prom/alertmanager:latest
+    container_name: alertmanager
+    restart: unless-stopped
+    volumes:
+      - ./.volumes/alertmanager/:/alertmanager
+      - ./docker/alertmanager/:/etc/alertmanager/
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yml'
+    expose:
+      - 9093
+    ports:
+      - "0.0.0.0:9093:9093/tcp"
+
+  alertmanager-discord:
+    image: vgorkavenko/alertmanager-discord-balval:1.4.0
+    container_name: alertmanager-discord
+    restart: unless-stopped
+    expose:
+      - 9094
+    ports:
+      - "0.0.0.0:9094:9094/tcp"
+    environment:
+      - PORT=9094
+      - DISCORD_WEBHOOK=${DISCORD_WEBHOOK}
+
+  main:
+    container_name: main
+    build: ./
+    depends_on:
+      - db
+      - prometheus
+    restart: unless-stopped
+    environment:
+      - PORT=${PORT}
+      - NODE_ENV=${NODE_ENV}
+      - LOG_LEVEL=${LOG_LEVEL}
+      - LOG_FORMAT=${LOG_FORMAT}
+      - RPC_URLS=${RPC_URLS}
+      - DB_PORT=5432
+      - DB_HOST=db
+      - DB_NAME=${DB_NAME}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+    expose:
+      - 3000
+    volumes:
+      - ./docker/validators/:/app/docker/validators
+    ports:
+      - 3000:${PORT}
