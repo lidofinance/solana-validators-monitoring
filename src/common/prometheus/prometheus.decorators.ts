@@ -54,19 +54,21 @@ export function TrackableRequest(
           name: propertyKey,
           target: targetName,
           status: RequestStatus.COMPLETE,
+          code: 200,
         });
         return r;
       })
       .catch((e) => {
         stop();
         this.logger.error(
-          `Request '${propertyKey}' ended with an error`,
+          `Ended with an error - Request: ${propertyKey} | Target: ${targetName} | Code: ${e.code ?? 'unknown'}`,
           e.stack,
         );
         this.promService.outgoingRPCRequestsCount.inc({
           name: propertyKey,
           target: targetName,
           status: RequestStatus.ERROR,
+          code: e.code ?? 0,
         });
         throw e;
       });

@@ -98,7 +98,7 @@ function WithFallback(
       return originalValue.apply(this, args).catch((e) => {
         i++;
         if (i < urls.length) {
-          this.logger.warn(
+          this.logger.error(
             `${e.message}. Error while doing RPC request. Will try to switch to another URL`,
           );
           return wrappedFunc.apply(this, args);
