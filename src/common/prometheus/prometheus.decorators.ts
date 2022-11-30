@@ -60,15 +60,16 @@ export function TrackableRequest(
       })
       .catch((e) => {
         stop();
+        const errCode = Number(e.message.split(' ')[0]) || 0;
         this.logger.error(
-          `Ended with an error - Request: ${propertyKey} | Target: ${targetName} | Code: ${e.code ?? 'unknown'}`,
+          `Ended with an error - Request: ${propertyKey} | Target: ${targetName} | Code: ${errCode}`,
           e.stack,
         );
         this.promService.outgoingRPCRequestsCount.inc({
           name: propertyKey,
           target: targetName,
           status: RequestStatus.ERROR,
-          code: e.code ?? 0,
+          code: errCode,
         });
         throw e;
       });
