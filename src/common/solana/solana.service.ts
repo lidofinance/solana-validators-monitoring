@@ -98,9 +98,10 @@ function WithFallback(
       return originalValue.apply(this, args).catch((e) => {
         i++;
         if (i < urls.length) {
-          this.logger.warn(
+          this.logger.error(
             `${e.message}. Error while doing RPC request. Will try to switch to another URL`,
           );
+          args.pop();
           return wrappedFunc.apply(this, args);
         }
         e.message = `${e.message}. Error while doing CL API request on all passed URLs`;

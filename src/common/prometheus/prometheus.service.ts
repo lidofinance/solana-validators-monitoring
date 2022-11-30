@@ -47,7 +47,7 @@ export class PrometheusService {
   public outgoingRPCRequestsCount = this.getOrCreateMetric('Counter', {
     name: METRIC_OUTGOING_RPC_REQUESTS_COUNT,
     help: 'Count of outgoing json-rpc requests',
-    labelNames: ['name', 'target', 'status'] as const,
+    labelNames: ['name', 'target', 'status', 'code'] as const,
   });
 
   public buildInfo = this.getOrCreateMetric('Counter', {
