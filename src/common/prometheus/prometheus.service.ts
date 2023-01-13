@@ -18,7 +18,8 @@ import {
   METRIC_SKIP_RATE,
   METRIC_TASK_DURATION_SECONDS,
   METRIC_TASK_RESULT_COUNT,
-  METRIC_VOTE_DISTANCE, METRIC_IDENTIFIES,
+  METRIC_VOTE_DISTANCE,
+  METRIC_IDENTIFIERS,
 } from './prometheus.constants';
 
 @Injectable()
@@ -124,9 +125,9 @@ export class PrometheusService {
     labelNames: ['operator'] as const,
   });
 
-  public identifies = this.getOrCreateMetric('Gauge', {
-    name: METRIC_IDENTIFIES,
-    help: 'Operators identifies',
+  public identifiers = this.getOrCreateMetric('Gauge', {
+    name: METRIC_IDENTIFIERS,
+    help: 'Operators identifiers',
     labelNames: ['operatorId', 'operator'],
   });
 }
