@@ -16,6 +16,8 @@ export const METRIC_SKIP_RATE = `skip_rate`;
 export const METRIC_DOWN_TIME = `down_time`;
 export const METRIC_VOTE_DISTANCE = `vote_distance`;
 export const METRIC_OUT_OF_EPOCH = `out_of_epoch`;
+
+export const METRIC_IDENTIFIERS = `identifiers`;
 export const METRIC_CLUSTER_AVG_SKIP_RATE = `cluster_avg_skip_rate`;
 export const METRIC_CLUSTER_AVG_DOWN_TIME = `cluster_avg_down_time`;
 export const METRIC_CLUSTER_AVG_VOTE_DISTANCE = `cluster_avg_vote_distance`;
