@@ -3,7 +3,10 @@ import { Injectable } from '@nestjs/common';
 export type KeysRegistry = Map<Identity, Alias>;
 
 export type Identity = string;
-export type Alias = string;
+export interface Alias {
+  name: string;
+  keybaseUsername: string;
+}
 
 @Injectable()
 export class ValidatorKeysRegistryService {

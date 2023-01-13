@@ -107,7 +107,7 @@ export class ValidatorKeysService implements OnModuleInit {
           // Config App contract may not contain alias
           this.validatorKeysRegistry.set(
             key,
-            parsed.info.configData.name ?? key,
+              { name: parsed.info.configData.name ?? key, keybaseUsername: parsed.info.configData.keybaseUsername ?? key },
           );
         }
       }

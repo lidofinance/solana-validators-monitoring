@@ -100,7 +100,8 @@ export class InspectorService {
       v.fetchTimestamp = startFetchTimestamp;
       v.epoch = clusterInfo.epochInfo.epoch;
       v.pubkey = info.nodePubkey;
-      v.operator = userKeys.get(v.pubkey) ?? 'unknown';
+      v.operatorId = userKeys.get(v.pubkey)?.keybaseUsername ?? 'unknown';
+      v.operator = userKeys.get(v.pubkey)?.name ?? 'unknown';
       v.lastVote = info.lastVote;
       v.voteDistance = getVoteDistance(info);
       v.status = getStatus(info);

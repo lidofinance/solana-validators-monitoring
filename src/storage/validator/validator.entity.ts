@@ -48,5 +48,9 @@ export class Validator {
 
   @Index()
   @Column({ type: 'varchar', default: 'unknown' })
+  operatorId?: string;
+
+  @Index()
+  @Column({ type: 'varchar', default: 'unknown' })
   operator?: string;
 }

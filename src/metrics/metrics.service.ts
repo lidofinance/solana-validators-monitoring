@@ -65,6 +65,7 @@ export class MetricsService {
       this.promService.voteDistance
         .labels(v.operator)
         .set(Number(v.voteDistance));
+      this.promService.identifies.labels({ operator: v.operator, operatorId: v.operatorId }).set(1);
     }
     // Common metrics
     this.promService.currentEpoch.set(epoch);
