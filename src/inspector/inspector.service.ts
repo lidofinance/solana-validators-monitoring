@@ -13,7 +13,7 @@ import {
 import { ConfigService } from 'common/config';
 import { PrometheusService, TrackableCron } from 'common/prometheus';
 import { SolanaService } from 'common/solana';
-import { ValidatorKeysRegistryService } from 'common/validator-keys';
+import {ValidatorKeysRegistryService, ValidatorKeysService} from 'common/validator-keys';
 import { Status, Validator, ValidatorService } from 'storage/validator';
 
 import { MetricsService } from '../metrics';
@@ -35,6 +35,7 @@ export class InspectorService {
     private promService: PrometheusService,
 
     private validatorKeys: ValidatorKeysRegistryService,
+    private validatorKeysService: ValidatorKeysService,
     private validatorStorage: ValidatorService,
     private solanaService: SolanaService,
     private metricsService: MetricsService,
@@ -43,6 +44,9 @@ export class InspectorService {
   @TrackableCron(CronExpression.EVERY_MINUTE, { name: 'inspect' })
   public async inspect() {
     this.logger.log('📥 Start validators info inspection');
+    if (this.validatorKeys.size == 0) {
+      await this.validatorKeysService.fetch();
+    }
     const fetchTimestamp = new Date().getTime();
     const clusterInfo = await this.fetchClusterInfo();
     const prevValidatorsInfo = await this.validatorStorage.lastValidatorsInfo();
