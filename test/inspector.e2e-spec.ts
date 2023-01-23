@@ -75,7 +75,6 @@ describe('Inspector', () => {
     validatorService.save = mockSaveToDB;
     metricsService.setMetrics = mockSetMetrics;
 
-    await validatorKeysService.onModuleInit();
     await inspectorService.inspect();
   });
 

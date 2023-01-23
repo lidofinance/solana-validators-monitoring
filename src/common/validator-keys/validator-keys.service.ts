@@ -5,7 +5,6 @@ import {
   Inject,
   Injectable,
   LoggerService,
-  OnModuleInit,
 } from '@nestjs/common';
 import { CronExpression } from '@nestjs/schedule';
 import { PublicKey } from '@solana/web3.js';
@@ -25,7 +24,7 @@ export interface FileContent {
 }
 
 @Injectable()
-export class ValidatorKeysService implements OnModuleInit {
+export class ValidatorKeysService {
   constructor(
     @Inject(LOGGER_PROVIDER)
     private logger: LoggerService,
@@ -36,16 +35,10 @@ export class ValidatorKeysService implements OnModuleInit {
     private solanaService: SolanaService,
   ) {}
 
-  public async onModuleInit(): Promise<void> {
-    if (this.validatorKeysRegistry.size == 0) {
-      await this.fetch();
-    }
-  }
-
   @TrackableCron(CronExpression.EVERY_HOUR, {
     name: 'fetch-user-validator-keys',
   })
-  private async fetch() {
+  public async fetch() {
     this.logger.log('📥 Start fetching a list of monitored validators');
     let identities: Identity[];
     let configValidators: ParsedProgramAccount[];
