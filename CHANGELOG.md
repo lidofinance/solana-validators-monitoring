@@ -1,3 +1,12 @@
+## [0.5.1](https://github.com/lidofinance/solana-validators-monitoring/compare/0.5.0...0.5.1) (2023-01-24)
+
+
+### Bug Fixes
+
+* `fetch-user-validator-keys` execution order ([#11](https://github.com/lidofinance/solana-validators-monitoring/issues/11)) ([b06960c](https://github.com/lidofinance/solana-validators-monitoring/commit/b06960c01238e57111d75c3798b4a0c1cbbedc7e))
+
+
+
 # [0.5.0](https://github.com/lidofinance/solana-validators-monitoring/compare/0.4.0...0.5.0) (2023-01-16)
 
 
