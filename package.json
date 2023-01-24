@@ -22,21 +22,20 @@
   },
   "dependencies": {
     "@lido-nestjs/logger": "^1.0.1",
-    "@nestjs/common": "^8.2.5",
-    "@nestjs/config": "^1.1.6",
-    "@nestjs/core": "^8.2.5",
-    "@nestjs/platform-fastify": "^8.2.5",
-    "@nestjs/schedule": "^1.1.0",
-    "@nestjs/terminus": "^8.0.4",
+    "@nestjs/common": "^9.0.0",
+    "@nestjs/config": "^2.0.0",
+    "@nestjs/core": "^9.0.0",
+    "@nestjs/platform-fastify": "^9.2.1",
+    "@nestjs/schedule": "^2.1.0",
+    "@nestjs/terminus": "^9.0.0",
     "@nestjs/typeorm": "^9.0.0",
-    "@solana/web3.js": "^1.50.1",
+    "@solana/web3.js": "^1.73.0",
     "@types/cron": "^2.0.0",
     "@willsoto/nestjs-prometheus": "^4.4.0",
     "borsh": "^0.7.0",
     "cache-manager": "^3.6.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.0",
-    "fastify-swagger": "^4.13.1",
     "node-fetch": "2",
     "pg": "^8.7.3",
     "prom-client": "^14.0.1",
@@ -69,7 +68,8 @@
     "ts-loader": "^9.2.6",
     "ts-node": "^10.4.0",
     "tsconfig-paths": "^3.12.0",
-    "typescript": "^4.5.4"
+    "typescript": "^4.5.4",
+    "webpack": "^5.0.0"
   },
   "jest": {
     "moduleFileExtensions": [
