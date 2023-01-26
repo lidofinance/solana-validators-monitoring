@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 
 import { PrometheusService } from 'common/prometheus';
-import { Status, ValidatorService } from 'storage/validator';
+import {Status, Validator, ValidatorService} from 'storage/validator';
+import {Metric} from "prom-client";
 
 enum Owner {
   USER = 'user',
@@ -10,6 +11,8 @@ enum Owner {
 
 @Injectable()
 export class MetricsService {
+
+  userValidators: Validator[] = [];
   constructor(
     private promService: PrometheusService,
     private validator: ValidatorService,
@@ -55,8 +58,8 @@ export class MetricsService {
       Number(clusterAvgVoteDistance.avg),
     );
     // User validators metrics
-    const userValidators = await this.validator.userValidators(fetchTimestamp);
-    for (const v of userValidators) {
+    this.userValidators = await this.validator.userValidators(fetchTimestamp);
+    for (const v of this.userValidators) {
       this.promService.outOfEpoch
         .labels(v.operator)
         .set(v.status == Status.OUT_OF_EPOCH ? 1 : 0);
@@ -67,8 +70,18 @@ export class MetricsService {
         .set(Number(v.voteDistance));
       this.promService.identifiers.labels({ operator: v.operator, operatorId: v.operatorId }).set(1);
     }
+    // Remove outdated metrics
+    [this.promService.outOfEpoch, this.promService.skipRate, this.promService.downTime, this.promService.voteDistance, this.promService.identifiers].forEach((metric) => this.removeOutdatedMetrics(metric));
     // Common metrics
     this.promService.currentEpoch.set(epoch);
     this.promService.lastFetchTimestamp.set(fetchTimestamp);
+  }
+
+  private removeOutdatedMetrics(metric: Metric) {
+    // remove metrics for validators that are not in the list anymore
+    const registry = Object.values(metric['hashMap']).map((m: any) => m.labels);
+    registry.forEach((labels) => {
+      if (!this.userValidators.find((o) => o.operator == labels.operator)) metric.remove(labels);
+    });
   }
 }
