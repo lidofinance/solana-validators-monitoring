@@ -1,3 +1,12 @@
+## [0.5.2](https://github.com/lidofinance/solana-validators-monitoring/compare/0.5.1...0.5.2) (2023-01-26)
+
+
+### Bug Fixes
+
+* remove outdated metrics ([#16](https://github.com/lidofinance/solana-validators-monitoring/issues/16)) ([92fbcea](https://github.com/lidofinance/solana-validators-monitoring/commit/92fbcea9789b4095d2f5226328eee0fea7b50ae2))
+
+
+
 ## [0.5.1](https://github.com/lidofinance/solana-validators-monitoring/compare/0.5.0...0.5.1) (2023-01-24)
 
 

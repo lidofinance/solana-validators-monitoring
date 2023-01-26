@@ -1,6 +1,6 @@
 {
   "name": "solana-validators-monitoring",
-  "version": "0.5.1",
+  "version": "0.5.2",
   "description": "Solana validators monitoring",
   "author": "Lido team",
   "private": true,
