@@ -1,3 +1,6 @@
+> [!WARNING]
+> ***THIS PROJECT IS NOT SUPPORTED ANYMORE!***
+
 ## Solana validators monitoring
 
 Solana validators performance monitoring like skip rate and downtime
